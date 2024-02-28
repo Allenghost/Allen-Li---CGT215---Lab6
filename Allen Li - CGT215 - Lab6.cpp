@@ -2,10 +2,50 @@
 //
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
+using namespace sf;
+using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+int main() {
+	string background = "images1/backgrounds/winter.png";
+	string foreground = "images1/characters/yoda.png";
+	Texture backgroundTex;
+	if (!backgroundTex.loadFromFile(background)) {
+		cout << "Couldn't Load Winter Image" << endl;
+		exit(1);
+	}
+	Texture foregroundTex;
+	if (!foregroundTex.loadFromFile(foreground)) {
+		cout << "Couldn't Load Yoda Image" << endl;
+		exit(1);
+	}
+	Image bgImage;
+	bgImage = backgroundTex.copyToImage();
+	Image fgImage;
+	fgImage = foregroundTex.copyToImage();
+	Vector2u sz = bgImage.getSize();
+	for (int y = 0; y < sz.y; y++) {
+		for (int x = 0; x < sz.x; x++) {
+			// These two loops will run the code inside for each pixel in
+			Color winterC = bgImage.getPixel(x, y);
+			// You can access the current pixel at x,y like so:
+			Color yodaC = fgImage.getPixel(x, y);
+			// Color objects store the individual channel values like example.r example.g and example.b
+			if ((yodaC.r == 32) && (yodaC.g == 214) && (yodaC.b == 23)) {
+				fgImage.setPixel(x, y, winterC);
+			}
+		}
+	}
+	// By default, just show the foreground image
+	RenderWindow window(VideoMode(1024, 768), "Here's the output");
+	Sprite sprite1;
+	Texture tex1;
+	tex1.loadFromImage(fgImage);
+	sprite1.setTexture(tex1);
+	window.clear();
+	window.draw(sprite1);
+	window.display();
+	while (true);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
